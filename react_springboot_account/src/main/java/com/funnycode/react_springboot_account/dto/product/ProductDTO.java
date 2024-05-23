@@ -14,7 +14,7 @@ import java.util.Set;
 public class ProductDTO {
     int id;
     String name;
-    double price;
+    Double price;
     String image;
     String type;
     Set<String> colors;

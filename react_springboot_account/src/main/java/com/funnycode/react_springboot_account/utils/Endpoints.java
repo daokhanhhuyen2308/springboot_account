@@ -11,7 +11,6 @@ public class Endpoints {
     };
 
     public static final String[] PRIVATE = {
-            "/api/product/add",
             "/api/product/update/{id}",
             "/api/product/delete/{id}",
             "/api/auth/getAllAccount"

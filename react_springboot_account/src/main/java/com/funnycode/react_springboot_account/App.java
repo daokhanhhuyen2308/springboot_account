@@ -10,17 +10,21 @@ import com.funnycode.react_springboot_account.repository.RoleRepository;
 import com.funnycode.react_springboot_account.repository.SizeRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.Arrays;
 import java.util.List;
 
 @SpringBootApplication
+@EnableJpaRepositories(basePackages = "com.funnycode.react_springboot_account.repository")
+@EntityScan(basePackages = "com.funnycode.react_springboot_account.config")
 public class App {
 
 	public static void main(String[] args) {
 
-   ApplicationContext context = SpringApplication.run(App.class, args);
+   SpringApplication.run(App.class, args);
 //
 //
 //

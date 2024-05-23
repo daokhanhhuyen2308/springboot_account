@@ -33,16 +33,17 @@ public class WebSecurityConfig {
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth.requestMatchers(Endpoints.PUBLIC).permitAll()
-//                        .requestMatchers(Endpoints.PRIVATE).authenticated()
-                        .requestMatchers("/api/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST,"/api/product/add").hasAnyAuthority("ADMIN", "MANAGER")
                         .requestMatchers(Endpoints.PRIVATE).hasAnyAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/auth/update/**").hasAnyAuthority("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/auth/account").hasAnyAuthority("USER")
+                        .requestMatchers("/api/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
              httpSecurity.addFilterBefore(jwtAuthenticationRequest, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
 
-    }
+        }
 
 }

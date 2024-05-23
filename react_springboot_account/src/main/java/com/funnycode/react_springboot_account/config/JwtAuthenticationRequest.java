@@ -8,12 +8,19 @@ import com.funnycode.react_springboot_account.mapper.AccountMapper;
 import com.funnycode.react_springboot_account.repository.AccountRepository;
 import com.funnycode.react_springboot_account.utils.JwtTokenUtils;
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +32,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.security.SignatureException;
 import java.util.ArrayList;
@@ -34,10 +42,23 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Configuration
 public class JwtAuthenticationRequest extends OncePerRequestFilter {
 
     private final AccountRepository accountRepository;
     private final JwtTokenUtils jwtTokenUtils;
+
+//    @Bean
+//    public EntityManagerFactory entityManagerFactory(DataSource dataSource) {
+//        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+//        em.setDataSource(dataSource);
+//        em.setPackagesToScan("com.funnycode.react_springboot_account.entity");
+//        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+//        em.setJpaVendorAdapter(vendorAdapter);
+//        em.afterPropertiesSet();
+//        return em.getObject();
+//    }
+
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request,
                                     @NotNull HttpServletResponse response,

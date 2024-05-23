@@ -25,7 +25,6 @@ public class ProductMapper {
 
 
     public static Product toProduct(ProductDTOAdd newProduct){
-
         return Product.builder().name(newProduct.getName())
                 .price(newProduct.getPrice()).image(newProduct.getImage())
                 .type(newProduct.getType()).build();

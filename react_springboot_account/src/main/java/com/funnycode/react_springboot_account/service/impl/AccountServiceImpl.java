@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -84,8 +85,9 @@ public class AccountServiceImpl implements AccountService {
         .orElseThrow(() -> CustomHandleException.badRequestException("Default role not found")));
         account.setRoles(authorities);
 
+        account.setCreatedAt(LocalDateTime.now());
+        account.setUpdatedAt(LocalDateTime.now());
         account = accountRepository.save(account);
-
 
 
         return builderDTO(account);
@@ -113,7 +115,6 @@ public class AccountServiceImpl implements AccountService {
             Account account = accountOptional.get();
             if(passwordEncoder.matches(account.getPassword(),password)){
                 isAuthenticate = true;
-                System.out.println("Login Successfully");
             }
         }else{
             throw CustomHandleException.notFountException("Email not found");
@@ -127,12 +128,19 @@ public class AccountServiceImpl implements AccountService {
 
         Account loggedInAccount = getAccountLoggedIn();
 
+
+        if (loggedInAccount == null) {
+            throw CustomHandleException.badRequestException("You are not logged in");
+        }
+
         if (loggedInAccount.getId() != id){
             throw CustomHandleException.badRequestException("You can only update your own information");
         }
 
         loggedInAccount.setUsername(request.getUsername());
         loggedInAccount.setPassword(passwordEncoder.encode(request.getPassword()));
+        loggedInAccount.setUpdatedAt(LocalDateTime.now());
+
         accountRepository.save(loggedInAccount);
 
 
@@ -155,6 +163,7 @@ public class AccountServiceImpl implements AccountService {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
             String email = ((UserDetails) principal).getUsername();
+
             Optional<Account> accountOptional = accountRepository.findByEmail(email);
             if (accountOptional.isPresent()) {
                 return accountOptional.get();
@@ -176,7 +185,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private AccountDTO builderDTO(Account account){
-        final long days = 24 * 60 * 60 * 30;
+        final long days = 24 * 60 * 60 * 30 * 2;
         String token = jwtTokenUtils.generateToken(AccountMapper.toTokenPayload(account), days);
         AccountDTO accountDTO = AccountMapper.toAccountDTO(account);
         accountDTO.setToken(token);
